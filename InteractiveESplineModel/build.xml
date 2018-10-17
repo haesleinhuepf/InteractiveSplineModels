@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="InteractiveESplineModel" default="install" basedir=".">
+	<property name="src" location="src"/> <!-- java source folder -->
+	<property name="bin" location="bin"/> <!-- intermediate build products -->
+	<property name="compile.debug" value="true"/>
+	<property name="imagej" location="${user.home}/Desktop/ImageJ/"/> <!-- ImageJ folder -->
+	<property name="dest" 	location="${imagej}/plugins"/> <!-- destination folder -->
+	<property name="dist" 	location="dist"/> <!-- build product location -->
+	<property name="jar"	location="${dist}/${ant.project.name}_.jar"/>
+	<property name="srczip"	location="${dist}/${ant.project.name}-src.zip"/>
+	<property name="clszip"	location="${dist}/${ant.project.name}-cls.zip"/>
+	
+	<!-- references to external libraries -->
+	<path id="lib.path">
+		<pathelement path="${imagej}/plugins/jars/big.jar"/>
+		<pathelement path="${imagej}/ij.jar"/>
+	</path>
+
+	<!-- Initialization target, for any prelimary setup needed to build -->
+	<target name="init" description="Preparation">
+		<mkdir dir="${src}"/> 
+		<mkdir dir="${bin}"/>
+		<mkdir dir="${dist}"/>
+	</target>
+
+	<!-- Compiles .java files inside the $src directory -->
+	<target name="compile" depends="init" description="Compile code">
+		<javac 
+			deprecation="on" 
+			srcdir="${src}" 
+			destdir="${bin}"
+			source="1.8" 
+			target="1.8"
+			includeAntRuntime="no"
+			classpathref="lib.path" 
+			debug="true">
+		</javac>
+	</target>
+	
+	<target name="install" depends="compile" description="Copy classes to ImageJ plugin directory">
+		<copy file="plugins.config" toDir="${bin}" />
+
+		<zip destfile="${srczip}" basedir="${src}" />
+		<zip destfile="${clszip}" basedir="${bin}" />
+		<jar destfile="${jar}" basedir="${bin}" />
+		
+		<copy toDir="${dest}">
+			<fileset dir="${dist}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		
+		
+	</target>
+</project>
