@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="InteractiveESplineModel" default="install" basedir=".">
+<project name="InteractiveLSplineModel" default="install" basedir=".">
 	<property name="src" location="src"/> <!-- java source folder -->
 	<property name="bin" location="bin"/> <!-- intermediate build products -->
 	<property name="compile.debug" value="true"/>

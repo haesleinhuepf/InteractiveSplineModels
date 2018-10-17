@@ -15,15 +15,15 @@ import snake2D.Snake2DScale;
  * 
  * @author Virginie Uhlmann (me@virginieuhlmann.com)
  */
-class InteractiveESplineModel implements Snake2D {
+class InteractiveLSplineModel implements Snake2D {
 
 	/** Snake defining nodes. */
 	private Snake2DNode[] coef_ = null;
 
 	/** LUT with the samples of the B-spline basis function at rate R. */
 	private double[] splineFunc_ = null;
-	/** Length of the support of the exponential B-spline basis function */
-	private static int N = 3;
+	/** Length of the support of the linear B-spline basis function */
+	private static int N = 2;
 
 	/**
 	 * LUT with the samples of the x coordinates of the snake contour at rate R.
@@ -73,7 +73,7 @@ class InteractiveESplineModel implements Snake2D {
 	/**
 	 * Constructor.
 	 */
-	public InteractiveESplineModel(int M, int width, int height, Roi initialContour) {
+	public InteractiveLSplineModel(int M, int width, int height, Roi initialContour) {
 		if (M < Math.max(3, N)) {
 			IJ.error("The minimum number of points for this basis function is " + Math.max(3, N));
 			return;
@@ -186,13 +186,8 @@ class InteractiveESplineModel implements Snake2D {
 	@Override
 	public Snake2DScale[] getScales() {
 
-		Snake2DScale[] skin = new Snake2DScale[2];
-		skin[0] = new Snake2DScale(Color.BLACK, new Color(0, 0, 0, 0), true, false);
-		skin[1] = new Snake2DScale(Color.RED, new Color(0, 0, 0, 0), true, false);
-
-		for (int k = 0; k < M_; k++) {
-			skin[0].addPoint((int) Math.round(coef_[k].x), (int) Math.round(coef_[k].y));
-		}
+		Snake2DScale[] skin = new Snake2DScale[1];
+		skin[0] = new Snake2DScale(Color.RED, new Color(0, 0, 0, 0), true, false);
 
 		int rxt, ryt;
 
@@ -212,7 +207,7 @@ class InteractiveESplineModel implements Snake2D {
 				ryt = height_ - 1;
 			}
 
-			skin[1].addPoint(rxt, ryt);
+			skin[0].addPoint(rxt, ryt);
 		}
 		return (skin);
 	}
@@ -276,7 +271,7 @@ class InteractiveESplineModel implements Snake2D {
 
 		for (int i = 0; i < NR_; i++) {
 			currentVal = (double) i / (double) DISCRETIZATIONSAMPLINGRATE;
-			splineFunc_[i] = ESpline3(currentVal);
+			splineFunc_[i] = BSpline1(currentVal);
 		}
 	}
 
@@ -319,48 +314,16 @@ class InteractiveESplineModel implements Snake2D {
 	// ----------------------------------------------------------------------------
 
 	/**
-	 * Exponential spline of order 3.
+	 * Exponential B-spline of order three.
 	 */
-	private double ESpline3(double t) {
-		double ESplineValue = 0.0;
-		double eta = 2 * (1 - Math.cos(PI2M_)) / (PI2M_ * PI2M_);
+	private double BSpline1(double t) {
+		double BSplineValue = 0.0;
 		if ((t >= 0) & (t <= 1)) {
-			ESplineValue = (2 * (1 - Math.cos(PIM_ * t) * Math.cos(PIM_ * t)));
+			BSplineValue = t;
 		} else if ((t > 1) & (t <= 2)) {
-			ESplineValue = (Math.cos(PI2M_ * (t - 2)) + Math.cos(PI2M_ * (t - 1)) - 2 * Math.cos(PI2M_));
-		} else if ((t > 2) & (t <= 3)) {
-			ESplineValue = (1 - Math.cos(PI2M_ * (t - 3)));
+			BSplineValue = 2 - t;
 		}
-		ESplineValue = ESplineValue / (PI2M_ * PI2M_ * eta);
-		return (ESplineValue);
-	}
-
-	// ----------------------------------------------------------------------------
-
-	/**
-	 * Computes the location of the spline coefficients given an array of points the
-	 * spline must interpolate using exponential splines of order 3.
-	 */
-	private Snake2DNode[] getSplineKnots(Point2D.Double[] contour) {
-
-		double[] knotsX = new double[M_];
-		double[] knotsY = new double[M_];
-		double b = ESpline3(1.5);
-
-		for (int i = 0; i < M_; i++) {
-			knotsX[i] = contour[i].x;
-			knotsY[i] = contour[i].y;
-		}
-
-		double[] pole = { (-b + Math.sqrt(2 * b - 1)) / (1 - b) };
-		knotsX = prescaledPeriodic(knotsX, pole);
-		knotsY = prescaledPeriodic(knotsY, pole);
-
-		Snake2DNode[] newCoeff = new Snake2DNode[M_];
-		for (int i = 0; i < M_; i++) {
-			newCoeff[i] = new Snake2DNode(knotsX[i], knotsY[i]);
-		}
-		return newCoeff;
+		return (BSplineValue);
 	}
 
 	// ----------------------------------------------------------------------------
@@ -402,40 +365,15 @@ class InteractiveESplineModel implements Snake2D {
 		return resampledCurve;
 	}
 
-	// ----------------------------------------------------------------------------
-
 	/**
-	 * Filters an array with a all-pole recursive filter with periodic boundary
-	 * conditions.
+	 * Computes the location of the spline coefficients given an array of points the
+	 * spline must interpolate using linear B-splines.
 	 */
-	private double[] prescaledPeriodic(double[] s, double[] pole) {
-
-		final int N = s.length;
-		for (int p = 0, P = pole.length; (p < P); p++) {
-			final double z = pole[p];
-			double z1 = z;
-			for (int k = N - 1; (0 < k); k--) {
-				s[0] += z1 * s[k];
-				z1 *= z;
-			}
-			s[0] /= 1.0 - z1;
-			for (int k = 1; (k < N); k++) {
-				s[k] += z * s[k - 1];
-			}
-			z1 = z;
-			final int K = N - 1;
-			for (int k = 0; (k < K); k++) {
-				s[K] += z1 * s[k];
-				z1 *= z;
-			}
-			s[K] *= 1.0 / (1.0 - z1);
-			z1 = 1.0 - z;
-			z1 *= z1;
-			s[K] *= z1;
-			for (int k = N - 2; (0 <= k); k--) {
-				s[k] = z * s[k + 1] + z1 * s[k];
-			}
+	private Snake2DNode[] getSplineKnots(Point2D.Double[] contour) {
+		Snake2DNode[] newCoeff = new Snake2DNode[M_];
+		for (int i = 0; i < M_; i++) {
+			newCoeff[i] = new Snake2DNode(contour[i].x, contour[i].y);
 		}
-		return (s);
+		return newCoeff;
 	}
 }
