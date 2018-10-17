@@ -1,34 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2012-2013 Biomedical Image Group (BIG), EPFL, Switzerland.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- * 
- * Contributors:
- *     Ricard Delgado-Gonzalo (ricard.delgado@gmail.com)
- *     Virginie Uhlmann (virginie.uhlmann@epfl.ch)
- *     Zsuzsanna Puspoki (zsuzsanna.puspoki@epfl.ch)
- ******************************************************************************/
-/*====================================================================
- | Version: October 24, 2013
- \===================================================================*/
-
-/*====================================================================
- | Philippe Thevenaz
- | EPFL/STI/IMT/LIB/BM.4.137
- | Station 17
- | CH-1015 Lausanne VD
- | Switzerland
- |
- | phone (CET): +41(21)693.51.61
- | fax: +41(21)693.68.10
- | RFC-822: philippe.thevenaz@epfl.ch
- | X-400: /C=ch/A=400net/P=switch/O=epfl/S=thevenaz/G=philippe/
- | URL: http://bigwww.epfl.ch/
- \===================================================================*/
-
-package snake2D;
+package hsnake2D;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.ceil;
@@ -68,15 +38,16 @@ import ij.gui.Toolbar;
 import ij.measure.Calibration;
 
 /**
- * This class encapsulates the interactive and managerial aspects of snakes. It
- * handles objects that implement the <code>Snake2D</code> interface.
+ * This class encapsulates the interactive and managerial aspects of Hermite
+ * snakes. It handles objects that implement the <code>Snake2D</code> interface.
  * 
- * @version October 31, 2012
+ * @version February 24, 2018
  * 
+ * @author Virginie Uhlmann (me@virginieuhlmann.com)
  * @author Ricard Delgado-Gonzalo (ricard.delgado@gmail.com)
  * @author Philippe Th&#233;venaz (philippe.thevenaz@epfl.ch)
  */
-public class Snake2DKeeper implements Observer {
+public class HSnake2DKeeper implements Observer {
 
 	/*
 	 * .................................................................... private
@@ -117,7 +88,7 @@ public class Snake2DKeeper implements Observer {
 	 * @see Snake2D#setNodes
 	 * @see Snake2D#getScales
 	 ********************************************************************/
-	public void interact(final Snake2D snake, final ImagePlus display) {
+	public void interact(final Snake2D snake, final ImagePlus display, final double tangentWeight) {
 		if (snake == null) {
 			return;
 		}
@@ -141,7 +112,7 @@ public class Snake2DKeeper implements Observer {
 			X[k] = new Snake2DNode(youngSnake[k].x, youngSnake[k].y, youngSnake[k].frozen, youngSnake[k].hidden);
 		}
 		tb = new snake2DEditToolbar(Toolbar.getInstance(), this);
-		final snake2DPointHandler ph = new snake2DPointHandler(display, snake, X, tb, this);
+		final snake2DPointHandler ph = new snake2DPointHandler(display, snake, X, tb, this, tangentWeight);
 		final snake2DPointAction pa = new snake2DPointAction(display, ph, tb, this);
 		ph.setPointAction(pa);
 		ph.activateDisplay();
@@ -237,7 +208,7 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener, MouseList
 	private Graphics g = null;
 	private ImagePlus display = null;
 	private ScrollbarWithLabel scrollbar = null;
-	private Snake2DKeeper keeper = null;
+	private HSnake2DKeeper keeper = null;
 	private Toolbar previousInstance = null;
 	private final boolean[] down = new boolean[TOOLS];
 	private int currentTool = snake2DPointAction.MOVE_CROSS;
@@ -263,7 +234,7 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener, MouseList
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DEditToolbar(final Toolbar previousToolbar, final Snake2DKeeper keeper) {
+	protected snake2DEditToolbar(final Toolbar previousToolbar, final HSnake2DKeeper keeper) {
 		previousInstance = previousToolbar;
 		this.keeper = keeper;
 		instance = this;
@@ -956,7 +927,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	 */
 	private ImagePlus display = null;
 	private Point mouse = null;
-	private Snake2DKeeper keeper = null;
+	private HSnake2DKeeper keeper = null;
 	private boolean active = false;
 	private double angle = 0.0;
 	private snake2DEditToolbar tb = null;
@@ -969,7 +940,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	 */
 	/*------------------------------------------------------------------*/
 	protected snake2DPointAction(final ImagePlus display, final snake2DPointHandler ph, final snake2DEditToolbar tb,
-			final Snake2DKeeper keeper) {
+			final HSnake2DKeeper keeper) {
 		super(display);
 		this.display = display;
 		this.ph = ph;
@@ -1277,9 +1248,9 @@ class snake2DPointHandler extends PolygonRoi
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
-	private final Point2D.Double hullCenter = new Point2D.Double();
-	private final Point2D.Double[] snakeHull = new Point2D.Double[4];
-	private Snake2DKeeper keeper = null;
+	private Point2D.Double hullCenter = new Point2D.Double();
+	private Point2D.Double[] snakeHull = new Point2D.Double[4];
+	private HSnake2DKeeper keeper = null;
 	private Snake2DNode[] point = null;
 	private Snake2D snake = null;
 	private boolean started = false;
@@ -1289,6 +1260,7 @@ class snake2DPointHandler extends PolygonRoi
 	private snake2DPointAction pa = null;
 	private static final int CROSS_HALFSIZE = 5;
 	private static final long serialVersionUID = 1L;
+	private double tangentWeight_ = 0.0;
 
 	/*
 	 * ....................................................................
@@ -1297,11 +1269,12 @@ class snake2DPointHandler extends PolygonRoi
 	 */
 	/*------------------------------------------------------------------*/
 	protected snake2DPointHandler(final ImagePlus display, final Snake2D snake, final Snake2DNode[] point,
-			final snake2DEditToolbar tb, final Snake2DKeeper keeper) {
+			final snake2DEditToolbar tb, final HSnake2DKeeper keeper, double tangentWeight_) {
 		super(0, 0, display);
 		this.display = display;
 		this.snake = snake;
 		this.point = point;
+		this.tangentWeight_ = tangentWeight_;
 		this.keeper = keeper;
 		this.tb = tb;
 		if (point == null) {
@@ -1397,14 +1370,23 @@ class snake2DPointHandler extends PolygonRoi
 				}
 			}
 			for (int k = 0, K = point.length; (k < K); k++) {
-				if (!point[k].hidden) {
-					final Point p = new Point((int) round(point[k].getX()), (int) round(point[k].getY()));
+				if (!point[k].hidden && k < point.length / 2) {
+					final Point p;
+					if (k >= point.length / 2 && tangentWeight_ != 0.0) {
+						p = new Point(
+								(int) round(point[k - point.length / 2].getX() + tangentWeight_ * point[k].getX()),
+								(int) round(point[k - point.length / 2].getY() + tangentWeight_ * point[k].getY()));
+					} else {
+						p = new Point((int) round(point[k].getX()), (int) round(point[k].getY()));
+					}
 
 					g.setColor(Color.BLACK);
 					g.fillOval(ic.screenX(p.x) - (int) (0.5 * CROSS_HALFSIZE) - 1 + dx,
 							ic.screenY(p.y) - (int) (0.5 * CROSS_HALFSIZE) - 1 + dy, CROSS_HALFSIZE, CROSS_HALFSIZE);
+
 				}
 			}
+
 			if (updateFullWindow) {
 				updateFullWindow = false;
 				display.draw();
@@ -1456,10 +1438,20 @@ class snake2DPointHandler extends PolygonRoi
 		y = ic.offScreenY(y);
 		double distanceSq = point[currentPoint].distanceSq(x, y);
 		for (int k = 0, K = point.length; (k < K); k++) {
-			final double candidateSq = point[k].distanceSq(x, y);
-			if (candidateSq < distanceSq) {
-				distanceSq = candidateSq;
-				currentPoint = k;
+			if (k >= point.length / 2 && tangentWeight_ != 0.0) {
+				Snake2DNode pp = new Snake2DNode(point[k - point.length / 2].x + tangentWeight_ * point[k].x,
+						point[k - point.length / 2].y + tangentWeight_ * point[k].y);
+				final double candidateSq = pp.distanceSq(x, y);
+				if (candidateSq < distanceSq) {
+					distanceSq = candidateSq;
+					currentPoint = k;
+				}
+			} else {
+				final double candidateSq = point[k].distanceSq(x, y);
+				if (candidateSq < distanceSq) {
+					distanceSq = candidateSq;
+					currentPoint = k;
+				}
 			}
 		}
 	} /* end findClosestPoint */
@@ -1488,7 +1480,12 @@ class snake2DPointHandler extends PolygonRoi
 			x = (display.getWidth() <= x) ? (display.getWidth() - 1) : (x);
 			y = (y < 0) ? (0) : (y);
 			y = (display.getHeight() <= y) ? (display.getHeight() - 1) : (y);
-			point[currentPoint].setLocation(x, y);
+			if (currentPoint >= point.length / 2 && tangentWeight_ != 0.0) {
+				point[currentPoint].setLocation((1.0 / tangentWeight_) * (x - point[currentPoint - point.length / 2].x),
+						(1.0 / tangentWeight_) * (y - point[currentPoint - point.length / 2].y));
+			} else {
+				point[currentPoint].setLocation(x, y);
+			}
 		}
 	} /* end movePoint */
 
@@ -1499,7 +1496,16 @@ class snake2DPointHandler extends PolygonRoi
 		final int dy = (int) (mag / 2.0);
 		final Polygon poly = new Polygon();
 		for (int k = 0, K = point.length; (k < K); k++) {
-			poly.addPoint(ic.screenX((int) round(point[k].getX())) + dx, ic.screenY((int) round(point[k].getY())) + dy);
+			if (k >= point.length / 2 && tangentWeight_ != 0.0) {
+				poly.addPoint(
+						ic.screenX((int) round(tangentWeight_ * point[k].getX() + point[k - point.length / 2].getX()))
+								+ dx,
+						ic.screenY((int) round(tangentWeight_ * point[k].getY() + point[k - point.length / 2].getY()))
+								+ dy);
+			} else {
+				poly.addPoint(ic.screenX((int) round(point[k].getX())) + dx,
+						ic.screenY((int) round(point[k].getY())) + dy);
+			}
 		}
 		final Rectangle bounds = poly.getBounds();
 		if (bounds.width == 0) {
@@ -1583,12 +1589,27 @@ class snake2DPointHandler extends PolygonRoi
 		final Rectangle srcRect = ic.getSrcRect();
 		final double x0 = hullCenter.x / mag + srcRect.x;
 		final double y0 = hullCenter.y / mag + srcRect.y;
-		for (int k = 0, K = point.length; (k < K); k++) {
+
+		int K = point.length;
+		if (tangentWeight_ != 0.0) {
+			K /= 2;
+		}
+		for (int k = 0; k < K; k++) {
+			double xi = point[k].x;
+			double yi = point[k].y;
 			if (!point[k].frozen) {
 				point[k].setLocation(x0 + scale * (point[k].x - x0), y0 + scale * (point[k].y - y0));
 			}
+			if (tangentWeight_ != 0.0) {
+				if (!point[k + point.length / 2].frozen) {
+					point[k + point.length / 2].setLocation((1.0 / tangentWeight_)
+							* (x0 + scale * (xi + tangentWeight_ * point[k + point.length / 2].x - x0) - point[k].x),
+							(1.0 / tangentWeight_) * (y0
+									+ scale * (yi + tangentWeight_ * point[k + point.length / 2].y - y0) - point[k].y));
+				}
+			}
 		}
-		for (int k = 0, K = snakeHull.length; (k < K); k++) {
+		for (int k = 0; k < snakeHull.length; k++) {
 			snakeHull[k].x = hullCenter.x + scale * (snakeHull[k].x - hullCenter.x);
 			snakeHull[k].y = hullCenter.y + scale * (snakeHull[k].y - hullCenter.y);
 		}
@@ -1608,11 +1629,29 @@ class snake2DPointHandler extends PolygonRoi
 		final Rectangle srcRect = ic.getSrcRect();
 		final double x0 = hullCenter.x / mag + srcRect.x;
 		final double y0 = hullCenter.y / mag + srcRect.y;
-		for (int k = 0, K = point.length; (k < K); k++) {
+
+		int K = point.length;
+		if (tangentWeight_ != 0.0) {
+			K /= 2;
+		}
+		for (int k = 0; k < K; k++) {
+			final double xi = point[k].x;
+			final double yi = point[k].y;
+
 			if (!point[k].frozen) {
 				final double x = point[k].x - x0;
 				final double y = point[k].y - y0;
 				point[k].setLocation(x * c - y * s + x0, x * s + y * c + y0);
+
+			}
+			if (tangentWeight_ != 0.0) {
+				if (!point[k + point.length / 2].frozen) {
+					double xt = xi + tangentWeight_ * point[k + point.length / 2].x - x0;
+					double yt = yi + tangentWeight_ * point[k + point.length / 2].y - y0;
+					point[k + point.length / 2].setLocation(
+							(1.0 / tangentWeight_) * ((xt * c - yt * s + x0) - point[k].x),
+							(1.0 / tangentWeight_) * ((xt * s + yt * c + y0) - point[k].y));
+				}
 			}
 		}
 	} /* end rotatePoints */
@@ -1633,9 +1672,24 @@ class snake2DPointHandler extends PolygonRoi
 			}
 			final double scale = ((y - snakeHull[2].y) / (snakeHull[1].y - snakeHull[2].y));
 			final double y0 = snakeHull[2].y / mag + srcRect.y;
-			for (int k = 0, K = point.length; (k < K); k++) {
+
+			int K = point.length;
+			if (tangentWeight_ != 0.0) {
+				K /= 2;
+			}
+			for (int k = 0; k < K; k++) {
+				double yi = point[k].y;
+
 				if (!point[k].frozen) {
 					point[k].setLocation(point[k].x, y0 + scale * (point[k].y - y0));
+				}
+				if (tangentWeight_ != 0.0) {
+					if (!point[k + point.length / 2].frozen) {
+						point[k + point.length / 2].setLocation(point[k + point.length / 2].x,
+								(1.0 / tangentWeight_)
+										* (y0 + scale * (yi + tangentWeight_ * point[k + point.length / 2].y - y0)
+												- point[k].y));
+					}
 				}
 			}
 			snakeHull[0].y = y;
@@ -1648,9 +1702,22 @@ class snake2DPointHandler extends PolygonRoi
 			}
 			final double scale = ((x - snakeHull[0].x) / (snakeHull[1].x - snakeHull[0].x));
 			final double x0 = snakeHull[0].x / mag + srcRect.x;
-			for (int k = 0, K = point.length; (k < K); k++) {
+
+			int K = point.length;
+			if (tangentWeight_ != 0.0) {
+				K /= 2;
+			}
+			for (int k = 0; k < K; k++) {
+				double xi = point[k].x;
 				if (!point[k].frozen) {
 					point[k].setLocation(x0 + scale * (point[k].x - x0), point[k].y);
+				}
+				if (tangentWeight_ != 0.0) {
+					if (!point[k + point.length / 2].frozen) {
+						point[k + point.length / 2].setLocation((1.0 / tangentWeight_) * (x0
+								+ scale * (xi + tangentWeight_ * point[k + point.length / 2].x - x0) - point[k].x),
+								point[k + point.length / 2].y);
+					}
 				}
 			}
 			snakeHull[1].x = x;
@@ -1663,9 +1730,23 @@ class snake2DPointHandler extends PolygonRoi
 			}
 			final double scale = ((y - snakeHull[1].y) / (snakeHull[2].y - snakeHull[1].y));
 			final double y0 = snakeHull[1].y / mag + srcRect.y;
-			for (int k = 0, K = point.length; (k < K); k++) {
+
+			int K = point.length;
+			if (tangentWeight_ != 0.0) {
+				K /= 2;
+			}
+			for (int k = 0; k < K; k++) {
+				double yi = point[k].y;
 				if (!point[k].frozen) {
 					point[k].setLocation(point[k].x, y0 + scale * (point[k].y - y0));
+				}
+				if (tangentWeight_ != 0.0) {
+					if (!point[k + point.length / 2].frozen) {
+						point[k + point.length / 2].setLocation(point[k + point.length / 2].x,
+								(1.0 / tangentWeight_)
+										* (y0 + scale * (yi + tangentWeight_ * point[k + point.length / 2].y - y0)
+												- point[k].y));
+					}
 				}
 			}
 			snakeHull[2].y = y;
@@ -1678,9 +1759,22 @@ class snake2DPointHandler extends PolygonRoi
 			}
 			final double scale = ((x - snakeHull[1].x) / (snakeHull[0].x - snakeHull[1].x));
 			final double x0 = snakeHull[1].x / mag + srcRect.x;
-			for (int k = 0, K = point.length; (k < K); k++) {
+
+			int K = point.length;
+			if (tangentWeight_ != 0.0) {
+				K /= 2;
+			}
+			for (int k = 0; k < K; k++) {
+				double xi = point[k].x;
 				if (!point[k].frozen) {
 					point[k].setLocation(x0 + scale * (point[k].x - x0), point[k].y);
+				}
+				if (tangentWeight_ != 0.0) {
+					if (!point[k + point.length / 2].frozen) {
+						point[k + point.length / 2].setLocation((1.0 / tangentWeight_) * (x0
+								+ scale * (xi + tangentWeight_ * point[k + point.length / 2].x - x0) - point[k].x),
+								point[k + point.length / 2].y);
+					}
 				}
 			}
 			snakeHull[3].x = x;
@@ -1694,7 +1788,11 @@ class snake2DPointHandler extends PolygonRoi
 	protected void translatePoints(int dx, int dy) {
 		dx = (int) round(dx / ic.getMagnification());
 		dy = (int) round(dy / ic.getMagnification());
-		for (int k = 0, K = point.length; (k < K); k++) {
+		int K = point.length;
+		if (tangentWeight_ != 0.0) {
+			K /= 2;
+		}
+		for (int k = 0; k < K; k++) {
 			if (!point[k].frozen) {
 				point[k].setLocation(point[k].x + dx, point[k].y + dy);
 			}
@@ -1727,7 +1825,7 @@ class snake2DSkinHandler extends PolygonRoi
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
-	private Snake2DKeeper keeper = null;
+	private HSnake2DKeeper keeper = null;
 	private Snake2DScale[] bestSkin = null;
 	private Snake2D snake = null;
 	private boolean started = false;
@@ -1738,7 +1836,7 @@ class snake2DSkinHandler extends PolygonRoi
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DSkinHandler(final ImagePlus display, final Snake2D snake, final Snake2DKeeper keeper) {
+	protected snake2DSkinHandler(final ImagePlus display, final Snake2D snake, final HSnake2DKeeper keeper) {
 		super(0, 0, display);
 		this.display = display;
 		this.snake = snake;

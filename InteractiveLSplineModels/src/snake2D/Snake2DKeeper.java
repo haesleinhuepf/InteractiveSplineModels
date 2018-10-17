@@ -35,16 +35,6 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.cos;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.WindowManager;
-import ij.gui.ImageCanvas;
-import ij.gui.ImageWindow;
-import ij.gui.PolygonRoi;
-import ij.gui.ScrollbarWithLabel;
-import ij.gui.StackWindow;
-import ij.gui.Toolbar;
-import ij.measure.Calibration;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -66,6 +56,17 @@ import java.awt.geom.Point2D;
 import java.util.Observable;
 import java.util.Observer;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.gui.ImageCanvas;
+import ij.gui.ImageWindow;
+import ij.gui.PolygonRoi;
+import ij.gui.ScrollbarWithLabel;
+import ij.gui.StackWindow;
+import ij.gui.Toolbar;
+import ij.measure.Calibration;
+
 /**
  * This class encapsulates the interactive and managerial aspects of snakes. It
  * handles objects that implement the <code>Snake2D</code> interface.
@@ -78,8 +79,8 @@ import java.util.Observer;
 public class Snake2DKeeper implements Observer {
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
@@ -92,29 +93,25 @@ public class Snake2DKeeper implements Observer {
 	private boolean snakeDied = false;
 
 	/*
-	 * ....................................................................
-	 * public methods
-	 * ....................................................................
+	 * .................................................................... public
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	/*********************************************************************
 	 * This method overlays handles on the image and lets the user interact with
 	 * them. It calls the method <code>Snake2D.getNodes()</code> one times to
 	 * initialize the snake-defining nodes, and calls the method
-	 * <code>Snake2D.setNodes()</code> repeatedly to update the snake-defining
-	 * nodes during the interactive session. The skin of the snake is drawn
-	 * according to the data available through the method
-	 * <code>Snake2D.getScales()</code>. It is possible to request that the
-	 * interaction be aborted by letting the method
-	 * <code>Snake2D.isAlive()</code> return <code>false</code>. This request
-	 * will be honored at the next user attempt to modify the snake.
+	 * <code>Snake2D.setNodes()</code> repeatedly to update the snake-defining nodes
+	 * during the interactive session. The skin of the snake is drawn according to
+	 * the data available through the method <code>Snake2D.getScales()</code>. It is
+	 * possible to request that the interaction be aborted by letting the method
+	 * <code>Snake2D.isAlive()</code> return <code>false</code>. This request will
+	 * be honored at the next user attempt to modify the snake.
 	 * 
-	 * @param snake
-	 *            The snake to Handle.
-	 * @param display
-	 *            A mandatory <code>ImagePlus</code> object over which the
-	 *            handles used to interactively manipulate the snake will be
-	 *            overlaid.
+	 * @param snake   The snake to Handle.
+	 * @param display A mandatory <code>ImagePlus</code> object over which the
+	 *                handles used to interactively manipulate the snake will be
+	 *                overlaid.
 	 * @see Snake2D#isAlive
 	 * @see Snake2D#getNodes
 	 * @see Snake2D#setNodes
@@ -130,8 +127,7 @@ public class Snake2DKeeper implements Observer {
 		optimalSnakeFound = false;
 		final Double energy = null;
 		if ((display == null) || snakeDied) {
-			snake.updateStatus(canceledByUser, snakeDied, optimalSnakeFound,
-					energy);
+			snake.updateStatus(canceledByUser, snakeDied, optimalSnakeFound, energy);
 			return;
 		}
 		display.killRoi();
@@ -142,14 +138,11 @@ public class Snake2DKeeper implements Observer {
 		final int K = youngSnake.length;
 		final Snake2DNode[] X = new Snake2DNode[K];
 		for (int k = 0; (k < K); k++) {
-			X[k] = new Snake2DNode(youngSnake[k].x, youngSnake[k].y,
-					youngSnake[k].frozen, youngSnake[k].hidden);
+			X[k] = new Snake2DNode(youngSnake[k].x, youngSnake[k].y, youngSnake[k].frozen, youngSnake[k].hidden);
 		}
 		tb = new snake2DEditToolbar(Toolbar.getInstance(), this);
-		final snake2DPointHandler ph = new snake2DPointHandler(display, snake,
-				X, tb, this);
-		final snake2DPointAction pa = new snake2DPointAction(display, ph, tb,
-				this);
+		final snake2DPointHandler ph = new snake2DPointHandler(display, snake, X, tb, this);
+		final snake2DPointAction pa = new snake2DPointAction(display, ph, tb, this);
 		ph.setPointAction(pa);
 		ph.activateDisplay();
 		try {
@@ -208,9 +201,8 @@ public class Snake2DKeeper implements Observer {
 	} /* end stopOptimizing */
 
 	/*
-	 * ....................................................................
-	 * Observer methods
-	 * ....................................................................
+	 * .................................................................... Observer
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	@Override
@@ -233,14 +225,13 @@ public class Snake2DKeeper implements Observer {
  */
 
 /*------------------------------------------------------------------*/
-class snake2DEditToolbar extends Canvas implements AdjustmentListener,
-		MouseListener
+class snake2DEditToolbar extends Canvas implements AdjustmentListener, MouseListener
 
 { /* begin class snake2DEditToolbar */
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private Graphics g = null;
@@ -272,8 +263,7 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DEditToolbar(final Toolbar previousToolbar,
-			final Snake2DKeeper keeper) {
+	protected snake2DEditToolbar(final Toolbar previousToolbar, final Snake2DKeeper keeper) {
 		previousInstance = previousToolbar;
 		this.keeper = keeper;
 		instance = this;
@@ -306,9 +296,8 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 	} /* adjustmentValueChanged */
 
 	/*
-	 * ....................................................................
-	 * Canvas methods
-	 * ....................................................................
+	 * .................................................................... Canvas
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	@Override
@@ -525,15 +514,13 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 	} /* end setTool */
 
 	/*------------------------------------------------------------------*/
-	protected void setWindow(final snake2DPointHandler ph,
-			final ImagePlus display) {
+	protected void setWindow(final snake2DPointHandler ph, final ImagePlus display) {
 		this.ph = ph;
 		this.display = display;
 	} /* end setWindow */
 
 	/*------------------------------------------------------------------*/
-	protected void terminateInteraction(final Snake2D snake,
-			final snake2DPointHandler ph) {
+	protected void terminateInteraction(final Snake2D snake, final snake2DPointHandler ph) {
 		cleanUpListeners();
 		restorePreviousToolbar();
 		Toolbar.getInstance().repaint();
@@ -542,9 +529,8 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 	} /* end terminateInteraction */
 
 	/*
-	 * ....................................................................
-	 * private methods
-	 * ....................................................................
+	 * .................................................................... private
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	private void cleanUpListeners() {
@@ -574,8 +560,7 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 
 	/*------------------------------------------------------------------*/
 	private void drawButton(final Graphics g, final int tool) {
-		fill3DRect(g, tool * TOOL_SIZE + 1, 1, TOOL_SIZE, TOOL_SIZE - 1,
-				!down[tool]);
+		fill3DRect(g, tool * TOOL_SIZE + 1, 1, TOOL_SIZE, TOOL_SIZE - 1, !down[tool]);
 		g.setColor(Color.black);
 		int x = tool * TOOL_SIZE + OFFSET;
 		int y = OFFSET;
@@ -852,8 +837,8 @@ class snake2DEditToolbar extends Canvas implements AdjustmentListener,
 	} /* end drawButton */
 
 	/*------------------------------------------------------------------*/
-	private void fill3DRect(final Graphics g, final int x, final int y,
-			final int width, final int height, final boolean raised) {
+	private void fill3DRect(final Graphics g, final int x, final int y, final int width, final int height,
+			final boolean raised) {
 		if (raised) {
 			g.setColor(gray);
 		} else {
@@ -944,8 +929,8 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 { /* begin class snake2DPointAction */
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private static final long serialVersionUID = 1L;
@@ -965,8 +950,8 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	protected static final int UNDEFINED = -1;
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
@@ -983,8 +968,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DPointAction(final ImagePlus display,
-			final snake2DPointHandler ph, final snake2DEditToolbar tb,
+	protected snake2DPointAction(final ImagePlus display, final snake2DPointHandler ph, final snake2DEditToolbar tb,
 			final Snake2DKeeper keeper) {
 		super(display);
 		this.display = display;
@@ -996,9 +980,8 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	} /* end snake2DPointAction */
 
 	/*
-	 * ....................................................................
-	 * Canvas methods
-	 * ....................................................................
+	 * .................................................................... Canvas
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	public void focusGained(final FocusEvent e) {
@@ -1033,8 +1016,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 			switch (tb.getCurrentTool()) {
 			case MOVE_CROSS: {
 				if (e.isShiftDown()) {
-					double scale = display.getWindow().getCanvas()
-							.getMagnification();
+					double scale = display.getWindow().getCanvas().getMagnification();
 					scale = (1.0 < scale) ? (1.0 / scale) : (scale);
 					final int xScaled = (int) round(round(x * scale) / scale);
 					final int yScaled = (int) round(round(y * scale) / scale);
@@ -1059,8 +1041,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 				break;
 			}
 			case ROTATE: {
-				final double currentAngle = atan2(ph.getHullCenter().y - y,
-						ph.getHullCenter().x - x);
+				final double currentAngle = atan2(ph.getHullCenter().y - y, ph.getHullCenter().x - x);
 				ph.rotatePoints(currentAngle - angle);
 				angle = currentAngle;
 				display.setRoi(ph);
@@ -1095,8 +1076,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 		active = true;
 		final int x = display.getWindow().getCanvas().offScreenX(e.getX());
 		final int y = display.getWindow().getCanvas().offScreenY(e.getY());
-		IJ.showStatus(display.getLocationAsString(x, y)
-				+ getValueAsString(x, y));
+		IJ.showStatus(display.getLocationAsString(x, y) + getValueAsString(x, y));
 	} /* end mouseMoved */
 
 	/*------------------------------------------------------------------*/
@@ -1117,11 +1097,9 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 		}
 		case MOVE_CROSS: {
 			if (e.isShiftDown()) {
-				double scale = display.getWindow().getCanvas()
-						.getMagnification();
+				double scale = display.getWindow().getCanvas().getMagnification();
 				scale = (1.0 < scale) ? (1.0 / scale) : (scale);
-				mouse = new Point((int) round(round(x * scale) / scale),
-						(int) round(round(y * scale) / scale));
+				mouse = new Point((int) round(round(x * scale) / scale), (int) round(round(y * scale) / scale));
 			} else {
 				ph.findClosestPoint(x, y);
 			}
@@ -1130,8 +1108,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 		case RESIZE: {
 			double scale = display.getWindow().getCanvas().getMagnification();
 			scale = (1.0 < scale) ? (1.0 / scale) : (scale);
-			mouse = new Point((int) round(round(x * scale) / scale),
-					(int) round(round(y * scale) / scale));
+			mouse = new Point((int) round(round(x * scale) / scale), (int) round(round(y * scale) / scale));
 			ph.findClosestHandle(x, y);
 			break;
 		}
@@ -1174,49 +1151,29 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_DOWN: {
 				scaledX = display.getWindow().getCanvas().screenX(x);
-				scaledShiftedY = display
-						.getWindow()
-						.getCanvas()
-						.screenY(
-								y
-										+ (int) ceil(1.0 / display.getWindow()
-												.getCanvas().getMagnification()));
+				scaledShiftedY = display.getWindow().getCanvas()
+						.screenY(y + (int) ceil(1.0 / display.getWindow().getCanvas().getMagnification()));
 				ph.movePoint(scaledX, scaledShiftedY);
 				break;
 			}
 			case KeyEvent.VK_LEFT: {
-				scaledShiftedX = display
-						.getWindow()
-						.getCanvas()
-						.screenX(
-								x
-										- (int) ceil(1.0 / display.getWindow()
-												.getCanvas().getMagnification()));
+				scaledShiftedX = display.getWindow().getCanvas()
+						.screenX(x - (int) ceil(1.0 / display.getWindow().getCanvas().getMagnification()));
 				scaledY = display.getWindow().getCanvas().screenY(y);
 				ph.movePoint(scaledShiftedX, scaledY);
 				break;
 			}
 			case KeyEvent.VK_RIGHT: {
-				scaledShiftedX = display
-						.getWindow()
-						.getCanvas()
-						.screenX(
-								x
-										+ (int) ceil(1.0 / display.getWindow()
-												.getCanvas().getMagnification()));
+				scaledShiftedX = display.getWindow().getCanvas()
+						.screenX(x + (int) ceil(1.0 / display.getWindow().getCanvas().getMagnification()));
 				scaledY = display.getWindow().getCanvas().screenY(y);
 				ph.movePoint(scaledShiftedX, scaledY);
 				break;
 			}
 			case KeyEvent.VK_UP: {
 				scaledX = display.getWindow().getCanvas().screenX(x);
-				scaledShiftedY = display
-						.getWindow()
-						.getCanvas()
-						.screenY(
-								y
-										- (int) ceil(1.0 / display.getWindow()
-												.getCanvas().getMagnification()));
+				scaledShiftedY = display.getWindow().getCanvas()
+						.screenY(y - (int) ceil(1.0 / display.getWindow().getCanvas().getMagnification()));
 				ph.movePoint(scaledX, scaledShiftedY);
 				break;
 			}
@@ -1257,9 +1214,8 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 	} /* end isActive */
 
 	/*
-	 * ....................................................................
-	 * private methods
-	 * ....................................................................
+	 * .................................................................... private
+	 * methods ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
 	private String getValueAsString(final int x, final int y) {
@@ -1299,8 +1255,7 @@ class snake2DPointAction extends ImageCanvas implements KeyListener
 		}
 		final int x = p.x;
 		final int y = p.y;
-		IJ.showStatus(display.getLocationAsString(x, y)
-				+ getValueAsString(x, y));
+		IJ.showStatus(display.getLocationAsString(x, y) + getValueAsString(x, y));
 	} /* end updateStatus */
 
 } /* end class snake2DPointAction */
@@ -1317,8 +1272,8 @@ class snake2DPointHandler extends PolygonRoi
 { /* begin class snake2DPointHandler */
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
@@ -1341,9 +1296,8 @@ class snake2DPointHandler extends PolygonRoi
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DPointHandler(final ImagePlus display, final Snake2D snake,
-			final Snake2DNode[] point, final snake2DEditToolbar tb,
-			final Snake2DKeeper keeper) {
+	protected snake2DPointHandler(final ImagePlus display, final Snake2D snake, final Snake2DNode[] point,
+			final snake2DEditToolbar tb, final Snake2DKeeper keeper) {
 		super(0, 0, display);
 		this.display = display;
 		this.snake = snake;
@@ -1391,8 +1345,7 @@ class snake2DPointHandler extends PolygonRoi
 				final int[] ypoints = skin[k].ypoints;
 				final Polygon poly = new Polygon();
 				for (int n = 0, N = skin[k].npoints; (n < N); n++) {
-					poly.addPoint(ic.screenX(xpoints[n]) + dx,
-							ic.screenY(ypoints[n]) + dy);
+					poly.addPoint(ic.screenX(xpoints[n]) + dx, ic.screenY(ypoints[n]) + dy);
 				}
 				if (skin[k].closed && skin[k].filled) {
 					g.fillPolygon(poly);
@@ -1408,163 +1361,48 @@ class snake2DPointHandler extends PolygonRoi
 			if (!keeper.isOptimizing()) {
 				switch (tb.getCurrentTool()) {
 				case snake2DPointAction.RESIZE: {
-					g.drawLine((int) round(snakeHull[0].x),
-							(int) round(snakeHull[0].y),
-							(int) round(snakeHull[1].x),
+					g.drawLine((int) round(snakeHull[0].x), (int) round(snakeHull[0].y), (int) round(snakeHull[1].x),
 							(int) round(snakeHull[1].y));
-					g.drawLine((int) round(snakeHull[1].x),
-							(int) round(snakeHull[1].y),
-							(int) round(snakeHull[2].x),
+					g.drawLine((int) round(snakeHull[1].x), (int) round(snakeHull[1].y), (int) round(snakeHull[2].x),
 							(int) round(snakeHull[2].y));
-					g.drawLine((int) round(snakeHull[2].x),
-							(int) round(snakeHull[2].y),
-							(int) round(snakeHull[3].x),
+					g.drawLine((int) round(snakeHull[2].x), (int) round(snakeHull[2].y), (int) round(snakeHull[3].x),
 							(int) round(snakeHull[3].y));
-					g.drawLine((int) round(snakeHull[3].x),
-							(int) round(snakeHull[3].y),
-							(int) round(snakeHull[0].x),
+					g.drawLine((int) round(snakeHull[3].x), (int) round(snakeHull[3].y), (int) round(snakeHull[0].x),
 							(int) round(snakeHull[0].y));
-					g.fillRect(
-							(int) round(0.5 * (snakeHull[0].x + snakeHull[1].x)) - 2,
-							(int) round(0.5 * (snakeHull[0].y + snakeHull[1].y)) - 2,
-							5, 5);
-					g.fillRect(
-							(int) round(0.5 * (snakeHull[1].x + snakeHull[2].x)) - 2,
-							(int) round(0.5 * (snakeHull[1].y + snakeHull[2].y)) - 2,
-							5, 5);
-					g.fillRect(
-							(int) round(0.5 * (snakeHull[2].x + snakeHull[3].x)) - 2,
-							(int) round(0.5 * (snakeHull[2].y + snakeHull[3].y)) - 2,
-							5, 5);
-					g.fillRect(
-							(int) round(0.5 * (snakeHull[3].x + snakeHull[0].x)) - 2,
-							(int) round(0.5 * (snakeHull[3].y + snakeHull[0].y)) - 2,
-							5, 5);
+					g.fillRect((int) round(0.5 * (snakeHull[0].x + snakeHull[1].x)) - 2,
+							(int) round(0.5 * (snakeHull[0].y + snakeHull[1].y)) - 2, 5, 5);
+					g.fillRect((int) round(0.5 * (snakeHull[1].x + snakeHull[2].x)) - 2,
+							(int) round(0.5 * (snakeHull[1].y + snakeHull[2].y)) - 2, 5, 5);
+					g.fillRect((int) round(0.5 * (snakeHull[2].x + snakeHull[3].x)) - 2,
+							(int) round(0.5 * (snakeHull[2].y + snakeHull[3].y)) - 2, 5, 5);
+					g.fillRect((int) round(0.5 * (snakeHull[3].x + snakeHull[0].x)) - 2,
+							(int) round(0.5 * (snakeHull[3].y + snakeHull[0].y)) - 2, 5, 5);
 					break;
 				}
 				case snake2DPointAction.ROTATE: {
-					g.drawLine((int) round(snakeHull[0].x),
-							(int) round(snakeHull[0].y),
-							(int) round(snakeHull[1].x),
+					g.drawLine((int) round(snakeHull[0].x), (int) round(snakeHull[0].y), (int) round(snakeHull[1].x),
 							(int) round(snakeHull[1].y));
-					g.drawLine((int) round(snakeHull[1].x),
-							(int) round(snakeHull[1].y),
-							(int) round(snakeHull[2].x),
+					g.drawLine((int) round(snakeHull[1].x), (int) round(snakeHull[1].y), (int) round(snakeHull[2].x),
 							(int) round(snakeHull[2].y));
-					g.drawLine((int) round(snakeHull[2].x),
-							(int) round(snakeHull[2].y),
-							(int) round(snakeHull[3].x),
+					g.drawLine((int) round(snakeHull[2].x), (int) round(snakeHull[2].y), (int) round(snakeHull[3].x),
 							(int) round(snakeHull[3].y));
-					g.drawLine((int) round(snakeHull[3].x),
-							(int) round(snakeHull[3].y),
-							(int) round(snakeHull[0].x),
+					g.drawLine((int) round(snakeHull[3].x), (int) round(snakeHull[3].y), (int) round(snakeHull[0].x),
 							(int) round(snakeHull[0].y));
-					g.fillRect((int) round(snakeHull[0].x) - 2,
-							(int) round(snakeHull[0].y) - 2, 5, 5);
-					g.fillRect((int) round(snakeHull[1].x) - 2,
-							(int) round(snakeHull[1].y) - 2, 5, 5);
-					g.fillRect((int) round(snakeHull[2].x) - 2,
-							(int) round(snakeHull[2].y) - 2, 5, 5);
-					g.fillRect((int) round(snakeHull[3].x) - 2,
-							(int) round(snakeHull[3].y) - 2, 5, 5);
+					g.fillRect((int) round(snakeHull[0].x) - 2, (int) round(snakeHull[0].y) - 2, 5, 5);
+					g.fillRect((int) round(snakeHull[1].x) - 2, (int) round(snakeHull[1].y) - 2, 5, 5);
+					g.fillRect((int) round(snakeHull[2].x) - 2, (int) round(snakeHull[2].y) - 2, 5, 5);
+					g.fillRect((int) round(snakeHull[3].x) - 2, (int) round(snakeHull[3].y) - 2, 5, 5);
 					break;
 				}
 				}
 			}
 			for (int k = 0, K = point.length; (k < K); k++) {
 				if (!point[k].hidden) {
-					final Point p = new Point((int) round(point[k].getX()),
-							(int) round(point[k].getY()));
+					final Point p = new Point((int) round(point[k].getX()), (int) round(point[k].getY()));
 
 					g.setColor(Color.BLACK);
-					g.fillOval(
-							ic.screenX(p.x - (int) (0.5 * CROSS_HALFSIZE) - 1)
-									+ dx,
-							ic.screenY(p.y - (int) (0.5 * CROSS_HALFSIZE) - 1)
-									+ dy, CROSS_HALFSIZE, CROSS_HALFSIZE);
-
-					// if (k == currentPoint) {
-					// if (pa.isActive()) {
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE - 1)
-					// + dx, ic.screenY(p.y - 1) + dy,
-					// ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y - 1) + dy);
-					// g.drawLine(ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y - 1) + dy,
-					// ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE - 1) + dy);
-					// g.drawLine(ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE - 1) + dy,
-					// ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE - 1) + dy);
-					// g.drawLine(ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE - 1) + dy,
-					// ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y - 1) + dy);
-					// g.drawLine(ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y - 1) + dy,
-					// ic.screenX(p.x + CROSS_HALFSIZE + 1) + dx,
-					// ic.screenY(p.y - 1) + dy);
-					// g.drawLine(ic.screenX(p.x + CROSS_HALFSIZE + 1)
-					// + dx, ic.screenY(p.y - 1) + dy,
-					// ic.screenX(p.x + CROSS_HALFSIZE + 1) + dx,
-					// ic.screenY(p.y + 1) + dy);
-					// g.drawLine(ic.screenX(p.x + CROSS_HALFSIZE + 1)
-					// + dx, ic.screenY(p.y + 1) + dy,
-					// ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y + 1) + dy);
-					// g.drawLine(ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y + 1) + dy,
-					// ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE + 1) + dy);
-					// g.drawLine(ic.screenX(p.x + 1) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE + 1) + dy,
-					// ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE + 1) + dy);
-					// g.drawLine(ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE + 1) + dy,
-					// ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y + 1) + dy);
-					// g.drawLine(ic.screenX(p.x - 1) + dx,
-					// ic.screenY(p.y + 1) + dy,
-					// ic.screenX(p.x - CROSS_HALFSIZE - 1) + dx,
-					// ic.screenY(p.y + 1) + dy);
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE - 1)
-					// + dx, ic.screenY(p.y + 1) + dy,
-					// ic.screenX(p.x - CROSS_HALFSIZE - 1) + dx,
-					// ic.screenY(p.y - 1) + dy);
-					// if (1.0 < ic.getMagnification()) {
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE)
-					// + dx, ic.screenY(p.y) + dy,
-					// ic.screenX(p.x + CROSS_HALFSIZE) + dx,
-					// ic.screenY(p.y) + dy);
-					// g.drawLine(ic.screenX(p.x) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE) + dy,
-					// ic.screenX(p.x) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE) + dy);
-					// }
-					// } else {
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE + 1)
-					// + dx, ic.screenY(p.y - CROSS_HALFSIZE + 1)
-					// + dy, ic.screenX(p.x + CROSS_HALFSIZE - 1)
-					// + dx, ic.screenY(p.y + CROSS_HALFSIZE - 1)
-					// + dy);
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE + 1)
-					// + dx, ic.screenY(p.y + CROSS_HALFSIZE - 1)
-					// + dy, ic.screenX(p.x + CROSS_HALFSIZE - 1)
-					// + dx, ic.screenY(p.y - CROSS_HALFSIZE + 1)
-					// + dy);
-					// }
-					// } else {
-					// g.drawLine(ic.screenX(p.x - CROSS_HALFSIZE) + dx,
-					// ic.screenY(p.y) + dy,
-					// ic.screenX(p.x + CROSS_HALFSIZE) + dx,
-					// ic.screenY(p.y) + dy);
-					// g.drawLine(ic.screenX(p.x) + dx,
-					// ic.screenY(p.y - CROSS_HALFSIZE) + dy,
-					// ic.screenX(p.x) + dx,
-					// ic.screenY(p.y + CROSS_HALFSIZE) + dy);
-					// }
+					g.fillOval(ic.screenX(p.x) - (int) (0.5 * CROSS_HALFSIZE) - 1 + dx,
+							ic.screenY(p.y) - (int) (0.5 * CROSS_HALFSIZE) - 1 + dy, CROSS_HALFSIZE, CROSS_HALFSIZE);
 				}
 			}
 			if (updateFullWindow) {
@@ -1595,13 +1433,11 @@ class snake2DPointHandler extends PolygonRoi
 	protected void findClosestHandle(final int x, final int y) {
 		final Point2D.Double p = new Point2D.Double(x, y);
 		closestHandle = 3;
-		Point2D.Double handle = new Point2D.Double(
-				0.5 * (snakeHull[3].x + snakeHull[0].x),
+		Point2D.Double handle = new Point2D.Double(0.5 * (snakeHull[3].x + snakeHull[0].x),
 				0.5 * (snakeHull[3].y + snakeHull[0].y));
 		double distanceSq = handle.distanceSq(p);
 		for (int k = 0, K = snakeHull.length - 1; (k < K); k++) {
-			handle = new Point2D.Double(
-					0.5 * (snakeHull[k].x + snakeHull[k + 1].x),
+			handle = new Point2D.Double(0.5 * (snakeHull[k].x + snakeHull[k + 1].x),
 					0.5 * (snakeHull[k].y + snakeHull[k + 1].y));
 			final double candidateSq = handle.distanceSq(p);
 			if (candidateSq < distanceSq) {
@@ -1635,8 +1471,7 @@ class snake2DPointHandler extends PolygonRoi
 
 	/*------------------------------------------------------------------*/
 	protected Point getPoint() {
-		return (new Point((int) round(point[currentPoint].getX()),
-				(int) round(point[currentPoint].getY())));
+		return (new Point((int) round(point[currentPoint].getX()), (int) round(point[currentPoint].getY())));
 	} /* end getPoint */
 
 	/*------------------------------------------------------------------*/
@@ -1664,8 +1499,7 @@ class snake2DPointHandler extends PolygonRoi
 		final int dy = (int) (mag / 2.0);
 		final Polygon poly = new Polygon();
 		for (int k = 0, K = point.length; (k < K); k++) {
-			poly.addPoint(ic.screenX((int) round(point[k].getX())) + dx,
-					ic.screenY((int) round(point[k].getY())) + dy);
+			poly.addPoint(ic.screenX((int) round(point[k].getX())) + dx, ic.screenY((int) round(point[k].getY())) + dy);
 		}
 		final Rectangle bounds = poly.getBounds();
 		if (bounds.width == 0) {
@@ -1751,15 +1585,12 @@ class snake2DPointHandler extends PolygonRoi
 		final double y0 = hullCenter.y / mag + srcRect.y;
 		for (int k = 0, K = point.length; (k < K); k++) {
 			if (!point[k].frozen) {
-				point[k].setLocation(x0 + scale * (point[k].x - x0), y0 + scale
-						* (point[k].y - y0));
+				point[k].setLocation(x0 + scale * (point[k].x - x0), y0 + scale * (point[k].y - y0));
 			}
 		}
 		for (int k = 0, K = snakeHull.length; (k < K); k++) {
-			snakeHull[k].x = hullCenter.x + scale
-					* (snakeHull[k].x - hullCenter.x);
-			snakeHull[k].y = hullCenter.y + scale
-					* (snakeHull[k].y - hullCenter.y);
+			snakeHull[k].x = hullCenter.x + scale * (snakeHull[k].x - hullCenter.x);
+			snakeHull[k].y = hullCenter.y + scale * (snakeHull[k].y - hullCenter.y);
 		}
 	} /* end resizePoints */
 
@@ -1804,8 +1635,7 @@ class snake2DPointHandler extends PolygonRoi
 			final double y0 = snakeHull[2].y / mag + srcRect.y;
 			for (int k = 0, K = point.length; (k < K); k++) {
 				if (!point[k].frozen) {
-					point[k].setLocation(point[k].x, y0 + scale
-							* (point[k].y - y0));
+					point[k].setLocation(point[k].x, y0 + scale * (point[k].y - y0));
 				}
 			}
 			snakeHull[0].y = y;
@@ -1820,8 +1650,7 @@ class snake2DPointHandler extends PolygonRoi
 			final double x0 = snakeHull[0].x / mag + srcRect.x;
 			for (int k = 0, K = point.length; (k < K); k++) {
 				if (!point[k].frozen) {
-					point[k].setLocation(x0 + scale * (point[k].x - x0),
-							point[k].y);
+					point[k].setLocation(x0 + scale * (point[k].x - x0), point[k].y);
 				}
 			}
 			snakeHull[1].x = x;
@@ -1836,8 +1665,7 @@ class snake2DPointHandler extends PolygonRoi
 			final double y0 = snakeHull[1].y / mag + srcRect.y;
 			for (int k = 0, K = point.length; (k < K); k++) {
 				if (!point[k].frozen) {
-					point[k].setLocation(point[k].x, y0 + scale
-							* (point[k].y - y0));
+					point[k].setLocation(point[k].x, y0 + scale * (point[k].y - y0));
 				}
 			}
 			snakeHull[2].y = y;
@@ -1852,8 +1680,7 @@ class snake2DPointHandler extends PolygonRoi
 			final double x0 = snakeHull[1].x / mag + srcRect.x;
 			for (int k = 0, K = point.length; (k < K); k++) {
 				if (!point[k].frozen) {
-					point[k].setLocation(x0 + scale * (point[k].x - x0),
-							point[k].y);
+					point[k].setLocation(x0 + scale * (point[k].x - x0), point[k].y);
 				}
 			}
 			snakeHull[3].x = x;
@@ -1888,15 +1715,15 @@ class snake2DSkinHandler extends PolygonRoi
 { /* begin class snake2DSkinHandler */
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/*
-	 * ....................................................................
-	 * private variables
+	 * .................................................................... private
+	 * variables
 	 * ....................................................................
 	 */
 	private ImagePlus display = null;
@@ -1911,8 +1738,7 @@ class snake2DSkinHandler extends PolygonRoi
 	 * ....................................................................
 	 */
 	/*------------------------------------------------------------------*/
-	protected snake2DSkinHandler(final ImagePlus display, final Snake2D snake,
-			final Snake2DKeeper keeper) {
+	protected snake2DSkinHandler(final ImagePlus display, final Snake2D snake, final Snake2DKeeper keeper) {
 		super(0, 0, display);
 		this.display = display;
 		this.snake = snake;
@@ -1967,8 +1793,7 @@ class snake2DSkinHandler extends PolygonRoi
 				final int[] ypoints = skin[k].ypoints;
 				final Polygon poly = new Polygon();
 				for (int n = 0, N = skin[k].npoints; (n < N); n++) {
-					poly.addPoint(ic.screenX(xpoints[n]) + dx,
-							ic.screenY(ypoints[n]) + dy);
+					poly.addPoint(ic.screenX(xpoints[n]) + dx, ic.screenY(ypoints[n]) + dy);
 				}
 				if (skin[k].closed && skin[k].filled) {
 					g.fillPolygon(poly);
@@ -1992,8 +1817,7 @@ class snake2DSkinHandler extends PolygonRoi
 					final int[] ypoints = bestSkin[k].ypoints;
 					final Polygon poly = new Polygon();
 					for (int n = 0, N = bestSkin[k].npoints; (n < N); n++) {
-						poly.addPoint(ic.screenX(xpoints[n]) + dx,
-								ic.screenY(ypoints[n]) + dy);
+						poly.addPoint(ic.screenX(xpoints[n]) + dx, ic.screenY(ypoints[n]) + dy);
 					}
 					if (bestSkin[k].closed && bestSkin[k].filled) {
 						g.fillPolygon(poly);
@@ -2001,8 +1825,7 @@ class snake2DSkinHandler extends PolygonRoi
 						if (bestSkin[k].closed) {
 							g.drawPolygon(poly);
 						} else {
-							g.drawPolyline(poly.xpoints, poly.ypoints,
-									poly.npoints);
+							g.drawPolyline(poly.xpoints, poly.ypoints, poly.npoints);
 						}
 					}
 				}
@@ -2039,12 +1862,10 @@ class snake2DSkinHandler extends PolygonRoi
 		}
 		this.bestSkin = new Snake2DScale[bestSkin.length];
 		for (int k = 0, K = bestSkin.length; (k < K); k++) {
-			this.bestSkin[k] = new Snake2DScale(bestSkin[k].bestAttemptColor,
-					bestSkin[k].currentAttemptColor, bestSkin[k].closed,
-					bestSkin[k].filled);
+			this.bestSkin[k] = new Snake2DScale(bestSkin[k].bestAttemptColor, bestSkin[k].currentAttemptColor,
+					bestSkin[k].closed, bestSkin[k].filled);
 			for (int n = 0, N = bestSkin[k].npoints; (n < N); n++) {
-				this.bestSkin[k].addPoint(bestSkin[k].xpoints[n],
-						bestSkin[k].ypoints[n]);
+				this.bestSkin[k].addPoint(bestSkin[k].xpoints[n], bestSkin[k].ypoints[n]);
 			}
 		}
 	} /* end setBestSkin */
