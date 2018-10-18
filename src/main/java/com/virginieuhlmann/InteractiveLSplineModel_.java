@@ -1,4 +1,4 @@
-package com.organisation;
+package com.virginieuhlmann;
 
 import java.awt.Checkbox;
 import java.awt.TextField;
@@ -33,9 +33,9 @@ import ij.plugin.filter.PlugInFilterRunner;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
-import com.organisation.snake2D.Snake2DKeeper;
-import com.organisation.snake2D.Snake2DNode;
-import com.organisation.snake2D.Snake2DScale;
+import com.virginieuhlmann.snake2D.Snake2DKeeper;
+import com.virginieuhlmann.snake2D.Snake2DNode;
+import com.virginieuhlmann.snake2D.Snake2DScale;
 
 /**
  * Implements ExtendedPlugInFilter to use InteractiveESplineModel as a plugin

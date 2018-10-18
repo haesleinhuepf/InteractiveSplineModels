@@ -1,4 +1,4 @@
-package com.organisation;
+package com.virginieuhlmann;
 
 import java.awt.Panel;
 import java.awt.event.ActionEvent;

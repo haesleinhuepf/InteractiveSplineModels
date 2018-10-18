@@ -1,4 +1,4 @@
-package com.organisation;
+package com.virginieuhlmann;
 
 import java.awt.Checkbox;
 import java.awt.TextField;
@@ -22,9 +22,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.organisation.hsnake2D.HSnake2DKeeper;
-import com.organisation.snake2D.Snake2DNode;
-import com.organisation.snake2D.Snake2DScale;
+import com.virginieuhlmann.hsnake2D.HSnake2DKeeper;
+import com.virginieuhlmann.snake2D.Snake2DNode;
+import com.virginieuhlmann.snake2D.Snake2DScale;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Macro;

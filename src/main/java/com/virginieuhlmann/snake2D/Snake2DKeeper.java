@@ -28,44 +28,15 @@
  | URL: http://bigwww.epfl.ch/
  \===================================================================*/
 
-package com.organisation.snake2D;
+package com.virginieuhlmann.snake2D;
 
-import static java.lang.Math.atan2;
-import static java.lang.Math.ceil;
-import static java.lang.Math.cos;
 import static java.lang.Math.round;
-import static java.lang.Math.sin;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Event;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
 import java.util.Observable;
 import java.util.Observer;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.WindowManager;
-import ij.gui.ImageCanvas;
-import ij.gui.ImageWindow;
-import ij.gui.PolygonRoi;
-import ij.gui.ScrollbarWithLabel;
-import ij.gui.StackWindow;
 import ij.gui.Toolbar;
-import ij.measure.Calibration;
 
 /**
  * This class encapsulates the interactive and managerial aspects of snakes. It

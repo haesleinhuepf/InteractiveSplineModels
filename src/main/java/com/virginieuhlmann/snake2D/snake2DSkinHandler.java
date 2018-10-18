@@ -1,4 +1,4 @@
-package com.organisation.snake2D;
+package com.virginieuhlmann.snake2D;
 
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;

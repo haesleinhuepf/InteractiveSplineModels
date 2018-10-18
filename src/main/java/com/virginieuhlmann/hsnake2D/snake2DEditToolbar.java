@@ -1,6 +1,6 @@
-package com.organisation.hsnake2D;
+package com.virginieuhlmann.hsnake2D;
 
-import com.organisation.snake2D.Snake2D;
+import com.virginieuhlmann.snake2D.Snake2D;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;

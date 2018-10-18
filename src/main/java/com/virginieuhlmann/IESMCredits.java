@@ -1,4 +1,4 @@
-package com.organisation;
+package com.virginieuhlmann;
 
 import ij.IJ;
 import ij.gui.GUI;

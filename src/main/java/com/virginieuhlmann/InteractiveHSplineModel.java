@@ -1,12 +1,12 @@
-package com.organisation;
+package com.virginieuhlmann;
 
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
-import com.organisation.snake2D.Snake2D;
-import com.organisation.snake2D.Snake2DNode;
-import com.organisation.snake2D.Snake2DScale;
+import com.virginieuhlmann.snake2D.Snake2D;
+import com.virginieuhlmann.snake2D.Snake2DNode;
+import com.virginieuhlmann.snake2D.Snake2DScale;
 import ij.IJ;
 import ij.gui.Roi;
 

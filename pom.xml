@@ -13,11 +13,11 @@
 	</parent>
 
 	<groupId>snake2d</groupId>
-	<artifactId>InteractiveESplineModel_</artifactId>
+	<artifactId>InteractiveSplineModels_</artifactId>
 	<version>0.0.1</version>
 
-	<name>InteractiveESplineModel_</name>
-	<description>InteractiveESplineModel_</description>
+	<name>InteractiveSplineModels_</name>
+	<description>InteractiveSplineModels_</description>
 	<url>https://github.com/vuhlmann/InteractiveSplineModels</url>
 	<inceptionYear>2018</inceptionYear>
 	<organization>

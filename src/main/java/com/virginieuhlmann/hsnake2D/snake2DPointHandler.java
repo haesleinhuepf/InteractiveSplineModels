@@ -1,8 +1,8 @@
-package com.organisation.hsnake2D;
+package com.virginieuhlmann.hsnake2D;
 
-import com.organisation.snake2D.Snake2D;
-import com.organisation.snake2D.Snake2DNode;
-import com.organisation.snake2D.Snake2DScale;
+import com.virginieuhlmann.snake2D.Snake2D;
+import com.virginieuhlmann.snake2D.Snake2DNode;
+import com.virginieuhlmann.snake2D.Snake2DScale;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 

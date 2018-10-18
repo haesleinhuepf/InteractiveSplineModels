@@ -1,4 +1,4 @@
-package com.organisation.hsnake2D;
+package com.virginieuhlmann.hsnake2D;
 
 import ij.IJ;
 import ij.ImagePlus;

@@ -1,7 +1,6 @@
-package com.organisation.demo;
+package com.virginieuhlmann.demo;
 
-import com.organisation.InteractiveESplineModel_;
-import com.organisation.InteractiveLSplineModel_;
+import com.virginieuhlmann.InteractiveLSplineModel_;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.gui.NewImage;

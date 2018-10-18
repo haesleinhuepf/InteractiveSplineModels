@@ -28,7 +28,7 @@
 | URL: http://bigwww.epfl.ch/
 \===================================================================*/
 
-package com.organisation.snake2D;
+package com.virginieuhlmann.snake2D;
 
 import java.awt.Color;
 import java.awt.Polygon;
