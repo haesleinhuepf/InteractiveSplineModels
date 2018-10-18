@@ -56,7 +56,11 @@
 	</developers>
 	<contributors>
 		<contributor>
-			<name>none</name>
+			<name>Philippe Thevenaz</name>
+			<organization>EPFL/STI/IMT/LIB/BM.4.137</organization>
+		</contributor>
+		<contributor>
+			<name>Ricard Delgado-Gonzalo</name>
 		</contributor>
 	</contributors>
 
