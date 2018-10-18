@@ -28,7 +28,7 @@
 | URL: http://bigwww.epfl.ch/
 \===================================================================*/
 
-package snake2D;
+package com.organisation.snake2D;
 
 import java.awt.geom.Point2D;
 

@@ -1,3 +1,5 @@
+package com.organisation;
+
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

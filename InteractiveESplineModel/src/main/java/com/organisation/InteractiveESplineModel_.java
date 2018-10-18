@@ -1,3 +1,5 @@
+package com.organisation;
+
 import java.awt.Checkbox;
 import java.awt.TextField;
 import java.io.File;
@@ -31,9 +33,9 @@ import ij.plugin.filter.PlugInFilterRunner;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
-import snake2D.Snake2DKeeper;
-import snake2D.Snake2DNode;
-import snake2D.Snake2DScale;
+import com.organisation.snake2D.Snake2DKeeper;
+import com.organisation.snake2D.Snake2DNode;
+import com.organisation.snake2D.Snake2DScale;
 
 /**
  * Implements ExtendedPlugInFilter to use InteractiveESplineModel as a plugin

@@ -28,7 +28,7 @@
  | URL: http://bigwww.epfl.ch/
  \===================================================================*/
 
-package snake2D;
+package com.organisation.snake2D;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.ceil;

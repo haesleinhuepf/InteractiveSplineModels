@@ -1,3 +1,5 @@
+package com.organisation;
+
 import ij.IJ;
 import ij.gui.GUI;
 
