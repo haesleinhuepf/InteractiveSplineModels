@@ -2,6 +2,7 @@ How to develop
 ==
 
 Eclipse: Import pom.xml as maven project to Eclipse
+
 IntelliJ: Open pom.xml as project
 
 How to deploy
